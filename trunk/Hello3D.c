@@ -24,18 +24,25 @@ iKIT iBOOL i51KitMain ( iS32 aid , iU32 message , void* parameter )
 		
 		case i51_MSG_INIT :
 		{
-	
+
+			iU32* panel = 0 ;
+			
 			i51KIT_STATIC_KIT_SET(Adapter,parameter);
 			i51KIT_STATIC_KIT_ASSERT(Adapter);
-		
-			glutInit ( 0 , 0 ) ;
-			gluOrtho2D ( 0.0 , 240.0 , 0.0 , 320.0 ) ;
-			gluPerspective ( 0 , 1 , -1 , -100 ) ;
-			glColor3f ( 0.5 , 0.5 , 0.5 ) ;
 
-			glBegin ( GL_LINE_STRIP ) ;
-			glVertex3f ( 200.0 , 200.0 , -2.0 ) ;
-			glVertex3f ( 200.0 , 200.0 , -2.0 ) ;
+			panel = i51AdeMmiGetPanel () ;
+			glutInit ( 0 , 0 ) ;
+			glClearColor ( 1.0 , 0.0 , 0.0 , 1.0 ) ;
+			glutSetPanel ( (void*)panel[1] ) ;
+			glViewport ( 0 , 0 , 240 , 320 ) ;
+			gluOrtho2D ( -240.0 , 240.0 , -320.0 , 320.0 ) ;
+			gluPerspective ( 0 , 1 , -1 , -100 ) ;
+			glColor3f ( 0.0 , 1.0 , 0.0 ) ;
+			glClear ( GL_COLOR_BUFFER_BIT ) ;
+
+			glBegin ( GL_LINES ) ;
+			glVertex3f ( 0.0 , 0.0 , -1.0 ) ;
+			glVertex3f ( 240.0 , 320.0 , -1.0 ) ;
 			glEnd () ;
 			glFlush () ;
 

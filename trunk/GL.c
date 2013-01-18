@@ -21,14 +21,114 @@
 
 */ 
 
+#include "i51KitAde.h"
 #include "math.h"
 #include "schal.h"
 #include "sccl.h"
 #include "GL.h"
 #include "glMatrix.h"
 #include "glOpenGl.h"
+#include "glRender.h"
 
 OpenGL opengl = { 0 } ;
+
+void glViewport ( GLint x , GLint y , GLsizei width , GLsizei height ) {
+
+	//	author : Jelo Wang
+	//	since : 2013.1.18
+	//	(C) TOK
+
+	opengl.glViewPort.x = x ; 
+	opengl.glViewPort.y = y ; 	
+	opengl.glViewPort.width = width ;
+	opengl.glViewPort.height = height ;
+	
+	
+}
+
+void glClearColor ( GLclampf red , GLclampf green , GLclampf blue , GLclampf alpha ) {
+
+	//	author : Jelo Wang
+	//	since : 2013.1.18
+	//	(C) TOK
+
+	opengl.glViewPort.background.red = red ;
+	opengl.glViewPort.background.green = green ;
+	opengl.glViewPort.background.blue = blue ;
+	opengl.glViewPort.background.alpha = alpha ;
+	
+}
+
+void glClear ( GLbitfield mask ) {
+
+
+	//	author : Jelo Wang
+	//	since : 2013.1.18
+	//	(C) TOK
+
+	GLint color = 0 ;
+	
+#if 0
+	if ( GL_COLOR_BUFFER_BIT == (GL_COLOR_BUFFER_BIT & mask) ) {
+
+
+	}
+
+
+	if ( GL_DEPTH_BUFFER_BIT == (GL_COLOR_BUFFER_BIT & mask) ) {
+
+
+	}
+
+
+	if ( GL_ACCUM_BUFFER_BIT == (GL_COLOR_BUFFER_BIT & mask) ) {
+
+
+	}
+
+
+	if ( GL_STENCIL_BUFFER_BIT == (GL_COLOR_BUFFER_BIT & mask) ) {
+
+
+	}
+	
+#endif
+
+
+	if ( glCOLOR_RGB565 == opengl.glColor.panelformat ) {
+		
+		GLbyte r5 = 31 ;
+		GLbyte g6 = 63 ;
+		GLbyte b5 = 31 ;
+
+		GLbyte nr5 = 0 ;
+		GLbyte ng6 = 0 ;
+		GLbyte nb5 = 0 ;		
+
+		GLint walker = 0 ;
+		GLint totall = 0 ;
+		GLushort* panel = 0 ;
+		
+		nr5 = opengl.glViewPort.background.red * r5 ;
+		ng6 = opengl.glViewPort.background.green * g6 ;
+		nb5 = opengl.glViewPort.background.blue * b5 ;
+
+		panel = opengl.glViewPort.panel ;
+		totall = opengl.glViewPort.width*opengl.glViewPort.height ;
+
+		RENDERRGB565COLOR_EX(color,nr5,ng6,nb5) ;
+
+		for ( walker = 0 ; walker < totall ; walker ++ ) {
+			panel[walker] = color ;
+		}				
+		
+	}
+
+
+	
+	
+	
+}
 
 void glBegin ( GLenum mode ) {
 
@@ -46,7 +146,8 @@ void glEnd () {
 	//	since : 2013.1.9
 	//	(C) TOK
 
-	return ;
+	glRenderMatrixDraw ( opengl.glViewMatrix , glVIEWMATRIXSIZE ) ;
+	
 	
 }
 
@@ -69,6 +170,7 @@ void glVertex3f ( GLfloat x , GLfloat y , GLfloat z ) {
 	//	since : 2013.1.9
 	//	(C) TOK
 
+	opengl.glColor.pipeformat = glCOLOR_RGB_F3 ;
 	glMatrixAdd ( 0 , x , y , z ) ;
 
 }
@@ -79,6 +181,7 @@ void glFlush (void) {
 	//	since : 2013.1.10
 	//	(C) TOK
 	
-	glRenderMatrixDraw ( opengl.glViewMatrix , glVIEWMATRIXSIZE ) ;
+	i51AdeMmiUpdateScreen () ;
 	
 }
+

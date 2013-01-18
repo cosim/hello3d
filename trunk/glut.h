@@ -71,6 +71,7 @@ extern void glutReshapeFunc(void (*func)(int width, int height));
 extern void glutKeyboardFunc(void (*func)(unsigned char key, int x, int y));
 extern void glutMouseFunc(void (*func)(int button, int state, int x, int y));
 extern void glutMotionFunc(void (*func)(int x, int y));
+extern void glutSetPanel ( unsigned char*  panel ) ;
 
 #endif
 
