@@ -24,18 +24,7 @@
 #include "GL.h"
 #include "glMatrix.h"
 #include "glOpenGl.h"
-
-static GLubyte glRenderGraphBuffer = 0 ;
-
-# define RENDERRGB565COLOR(color,red,green,blue)\
-	color = color | ( (red >> 3) << 11 ) ;\
-	color = color | ( (green >> 2) << 5 ) ;\
-	color = color | (blue >> 3) ;\
-
-# define RENDERRGB565COLOR_EX(color,red,green,blue)\
-	color = color | ( red << 11 ) ;\
-	color = color | ( green << 5 ) ;\
-	color = color | (blue) ;\
+#include "glRender.h"
 
 static GLint glRenderColorTrans ( GLint ns , GLint fs ) {
 
@@ -52,9 +41,9 @@ static GLint glRenderColorTrans ( GLint ns , GLint fs ) {
 	
 	if ( glCOLOR_RGB565 == ns ) {
 
-		GLbyte r5 = 32 ;
-		GLbyte g6 = 64 ;
-		GLbyte b5 = 32 ;
+		GLbyte r5 = 31 ;
+		GLbyte g6 = 63 ;
+		GLbyte b5 = 31 ;
 
 		GLbyte nr5 = 0 ;
 		GLbyte ng6 = 0 ;
@@ -88,7 +77,7 @@ void glRenderDrawPoint ( GLint x , GLint y ) {
 	
 	if ( glCOLOR_RGB565 == opengl.glColor.panelformat ) {
 
-		GLshort* buffer = (GLshort* ) glRenderGraphBuffer ;
+		GLshort* buffer = (GLshort* ) opengl.glViewPort.panel ;
 		buffer [y*opengl.glViewPort.width+x] = color ;
 		
 	}
@@ -102,7 +91,7 @@ void glRenderDrawLine ( GLint x0 , GLint y0 , GLint x1 , GLint y1 ) {
 	
 	int panel_width = opengl.glViewPort.width ;
 	int panel_height = opengl.glViewPort.height ;
-	short* panel16 = (GLshort* ) glRenderGraphBuffer ;
+	short* panel16 = (GLshort* ) opengl.glViewPort.panel ;
 	float dy,dx,x,y,m = 0 ;
 	GLint color = 0 ;
 
@@ -187,29 +176,53 @@ void glRenderDrawLine ( GLint x0 , GLint y0 , GLint x1 , GLint y1 ) {
 
 void glRenderMatrixDraw ( void* buffer , GLint TotallMatrixs ) {
 
+	GLint walker = 0 ;
+	GLint totall = 0 ;
+
+	glVIEWMATRIXATOM v1 = { 0 } ;
+	glVIEWMATRIXATOM v2 = { 0 } ;
+		
 	glMatrixPerspectiveTransform () ;
+
+	totall = opengl.glViewMatrix.walker ;	
 	
-	switch ( opengl.glPrimitive ) {
+	for ( walker = 0 ; walker < totall ; ) {
+
+		switch ( opengl.glPrimitive ) {
+			
+			case GL_POINTS :
+			break ;
+			
+			case GL_LINES :
+			{
+				memcpy ( &v1 , (void*)((int) opengl.glViewMatrix.buffer+walker ) , sizeof(glVIEWMATRIXATOM) ) ;
+				walker = walker + sizeof(glVIEWMATRIXATOM) ;
+				memcpy ( &v2 , (void*)((int) opengl.glViewMatrix.buffer+walker ) , sizeof(glVIEWMATRIXATOM) ) ;
+				glRenderDrawLine ( v1.Current.x , v1.Current.y , v2.Current.x , v2.Current.y ) ;
+				walker = walker + sizeof(glVIEWMATRIXATOM) ;
+			}
+			break ;
+			
+			case GL_POLYGON :
+			break ;
+			
+			case GL_LINE_STRIP :			
+			break ;
+			
+			case GL_LINE_LOOP :
+			break ;
+			
+			case GL_QUAD_STRIP :
+			break ;
+
+			default :
+				walker = walker + sizeof(glVIEWMATRIXATOM) ;
+
+		}
 		
-		case GL_POINTS :
-		break ;
-		
-		case GL_LINES :			
-		break ;
-		
-		case GL_POLYGON :
-		break ;
-		
-		case GL_LINE_STRIP :			
-		break ;
-		
-		case GL_LINE_LOOP :
-		break ;
-		
-		case GL_QUAD_STRIP :
-		break ;
 		
 	}
+
 
 
 }

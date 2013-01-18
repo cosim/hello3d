@@ -39,6 +39,17 @@ void glutKeyboardFunc(void (*func)(unsigned char key, int x, int y));
 void glutMouseFunc(void (*func)(int button, int state, int x, int y));
 void glutMotionFunc(void (*func)(int x, int y));
 
+void glutSetPanel ( unsigned char*  panel ) {
+
+	//	author : Jelo Wang
+	//	since : 2013.1.18
+	//	(C) TOK
+
+	//	这是非标准接口，用来设置显存
+
+	opengl.glViewPort.panel = panel ;
+	
+}
 
 void gluOrtho2D ( GLdouble left , GLdouble right , GLdouble bottom , GLdouble top ) {
 
@@ -49,7 +60,8 @@ void gluOrtho2D ( GLdouble left , GLdouble right , GLdouble bottom , GLdouble to
 	opengl.glPerspMatrix.ortho2d.left = left ;
 	opengl.glPerspMatrix.ortho2d.right = right ;
 	opengl.glPerspMatrix.ortho2d.top = top ;
-	opengl.glPerspMatrix.ortho2d.bottom = bottom ;
+	opengl.glPerspMatrix.ortho2d.bottom = bottom ;	
+		
 
 }
 
@@ -99,10 +111,19 @@ void gluPerspective ( GLdouble fovy , GLdouble aspect ,  GLdouble zNear , GLdoub
 		printf("right %1.3f\n",((-100*opengl.glPerspMatrix.matrix[2][2]+opengl.glPerspMatrix.matrix[2][3]) /-100)) ;
 		printf("middle %1.3f\n",((-3*opengl.glPerspMatrix.matrix[2][2]+opengl.glPerspMatrix.matrix[2][3]) /-3)) ;
 	#endif
+
+	//	单位观察立方体坐标区间[-1,1]，长度2
+	opengl.glViewMatrix.matrix[0][0] = (GLfloat )opengl.glViewPort.width / 2 ;
+	opengl.glViewMatrix.matrix[0][2] = (GLfloat )opengl.glViewPort.width  / 2 ;
+
+	opengl.glViewMatrix.matrix[1][1] = (GLfloat )opengl.glViewPort.height / 2 ;
+	opengl.glViewMatrix.matrix[1][2] = (GLfloat )opengl.glViewPort.height / 2 ;
+	
 	
 }
 
 void gluLookAt (
+	
     GLdouble eyex, 
     GLdouble eyey, 
     GLdouble eyez, 
@@ -112,4 +133,5 @@ void gluLookAt (
     GLdouble upx, 
     GLdouble upy, 
     GLdouble upz);
+
 

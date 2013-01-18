@@ -56,7 +56,7 @@ void glMatrixAdd ( GLint model ,  GLfloat x , GLfloat y , GLfloat z ) {
 	atom.Orignal.y = y ;
 	atom.Orignal.z = z ;
 
-	atom.Current.x= x ;
+	atom.Current.x = x ;
 	atom.Current.y = y ;
 	atom.Current.z = z ;	
 
@@ -79,10 +79,8 @@ void glMatrixPerspectiveTransform () {
 	GLint totall = 0 ;
 
 	glVIEWMATRIXATOM atom = { 0 } ;
-	
-	totall = opengl.glViewMatrix.walker / sizeof(glVIEWMATRIXATOM) ;
 
-	for ( walker = 0 ; walker < totall ; walker ++ ) {
+	for ( walker = 0 ; walker < opengl.glViewMatrix.walker ; walker += sizeof(glVIEWMATRIXATOM) ) {
 
 		memcpy ( &atom , (void*)((int) opengl.glViewMatrix.buffer+walker ) , sizeof(glVIEWMATRIXATOM) ) ;
 
@@ -101,6 +99,17 @@ void glMatrixPerspectiveTransform () {
 			
 		}
 
+		#ifdef glDEBUG
+			printf("x %1.3f\n",atom.Current.x*opengl.glViewMatrix.matrix[0][0]+opengl.glViewMatrix.matrix[0][2]) ;
+			printf("y %1.3f\n",atom.Current.y*opengl.glViewMatrix.matrix[1][1]+opengl.glViewMatrix.matrix[0][2]) ;
+		#endif
+		
+		//	最终变换到屏幕坐标
+		atom.Current.x = atom.Current.x*opengl.glViewMatrix.matrix[0][0]+opengl.glViewMatrix.matrix[0][2] ;
+		atom.Current.y = opengl.glViewMatrix.matrix[1][1]+opengl.glViewMatrix.matrix[0][2] ;
+
+		memcpy ( (void*)((int) opengl.glViewMatrix.buffer+walker ) , &atom , sizeof(glVIEWMATRIXATOM) ) ;
+					
 		
 	}
 	

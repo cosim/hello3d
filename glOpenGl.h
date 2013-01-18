@@ -83,6 +83,9 @@ typedef struct {
 		GLint walker ;
 		GLint buffersize ;
 
+		//	单位观察立方体坐标到屏幕坐标的变换矩阵
+		GLfloat matrix[3][3] ;
+		
 	} glViewMatrix ;
 
 	struct {
@@ -100,7 +103,8 @@ typedef struct {
 			GLint left ;
 			GLint right ;
 		} ortho2d ;
-					
+
+		//	透视投影矩阵
 		GLfloat matrix[4][4] ;
 
 	} glPerspMatrix ;
@@ -109,10 +113,23 @@ typedef struct {
 	GLint glPrimitive ;
 
 	struct {
-
+		
+		GLint x ;
+		GLint y ;		
 		GLint width ;
 		GLint height ;
+
+		struct {
+			
+			GLfloat red ;
+			GLfloat green ;
+			GLfloat blue ;		
+			GLfloat alpha ;
+			
+		} background ;
 		
+		GLushort* panel ;
+
 	} glViewPort ;
 
 	struct {
