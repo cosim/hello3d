@@ -86,7 +86,7 @@ void glMatrixPerspectiveTransform () {
 
 		//	x*(2N/(right-left)) + (right+left/(right-left))
 		atom.Current.x = atom.Current.x*opengl.glPerspMatrix.matrix[0][0] + (atom.Current.z*opengl.glPerspMatrix.matrix[0][2]) ;
-		//	x*(2N/(top-bottom)) + (top+bottom/(top-bottom))
+		//	y*(2N/(top-bottom)) + (top+bottom/(top-bottom))
 		atom.Current.y = atom.Current.y*opengl.glPerspMatrix.matrix[1][1] + (atom.Current.z*opengl.glPerspMatrix.matrix[1][2]) ;
 
 		if ( 0 != atom.Current.z ) {
